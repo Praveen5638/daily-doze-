@@ -10,17 +10,17 @@ if (!is_post()) {
 verify_csrf();
 $returnTo = safe_local_path(post_str('redirect_to'), '');
 if (trim((string) ($_POST['company_website'] ?? '')) !== '') {
-    flash('success', 'Thank you for subscribing.');
+    flash('success', t('newsletter.flash_thanks', 'Thank you for subscribing.'));
     redirect($returnTo);
 }
 $email = strtolower(post_str('email'));
 
 if (!RateLimiter::hit('newsletter:' . request_ip(), 'subscribe', 8, 3600)) {
-    flash('error', 'Too many subscription attempts. Please try again later.');
+    flash('error', t('newsletter.flash_limit', 'Too many subscription attempts. Please try again later.'));
     redirect($returnTo);
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190) {
-    flash('error', 'Please enter a valid email address.');
+    flash('error', t('newsletter.flash_invalid', 'Please enter a valid email address.'));
     redirect($returnTo);
 }
 
@@ -33,20 +33,21 @@ if ($existing === null) {
         'token' => $token,
     ]);
     $unsubscribeUrl = url('newsletter-unsubscribe.php?token=' . $token);
+    $unsubscribeLink = '<a href="' . e($unsubscribeUrl) . '">' . e(t('newsletter.unsubscribe_here', 'unsubscribe here')) . '</a>';
     Mailer::send(
         $email,
-        'Welcome to ' . setting('site_name', 'Daily Dose Export'),
+        t('newsletter.welcome_subject', 'Welcome to ' . setting('site_name', 'Daily Dose Export')),
         email_wrap(
-            'You are on the list',
-            '<p>Thank you for subscribing to updates from ' . e(setting('site_name', 'Daily Dose Export')) . '.</p>'
+            t('newsletter.welcome_heading', 'You are on the list'),
+            '<p>' . e(t('newsletter.welcome_body', 'Thank you for subscribing to updates from ' . setting('site_name', 'Daily Dose Export') . '.')) . '</p>'
             . '<p>' . e(setting('newsletter_text', 'Occasional updates only. Unsubscribe anytime.')) . '</p>'
-            . '<p style="font-size:12px;color:#737A73">If you did not subscribe, you can <a href="' . e($unsubscribeUrl) . '">unsubscribe here</a>.</p>',
-            ['url' => url('shop.php'), 'label' => 'Explore the shop']
+            . '<p style="font-size:12px;color:#737A73">' . sprintf(e(t('newsletter.welcome_alt_html', 'If you did not subscribe, you can %s.')), $unsubscribeLink) . '</p>',
+            ['url' => url('shop.php'), 'label' => t('newsletter.welcome_button', 'Explore the shop')]
         )
     );
 } elseif ($existing['status'] !== 'subscribed') {
     Database::update('newsletter_subscribers', ['status' => 'subscribed'], 'id = ?', [$existing['id']]);
 }
 
-flash('success', 'Thank you for subscribing. Check your inbox for a confirmation.');
+flash('success', t('newsletter.flash_success', 'Thank you for subscribing. Check your inbox for a confirmation.'));
 redirect($returnTo);

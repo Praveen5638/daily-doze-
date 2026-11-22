@@ -14,9 +14,9 @@ if (is_post()) {
     verify_csrf();
     $email = strtolower(post_str('email'));
     if (!RateLimiter::hit('forgot:' . request_ip(), 'forgot', 6, 3600)) {
-        $error = 'Too many reset requests from this connection. Please try again in an hour.';
+        $error = t('forgot.error_limit', 'Too many reset requests from this connection. Please try again in an hour.');
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter the email address you registered with.';
+        $error = t('forgot.error_email', 'Please enter the email address you registered with.');
     } else {
         $customer = Database::one('SELECT id, first_name, email, status FROM customers WHERE email = ?', [$email]);
         if ($customer !== null && $customer['status'] !== 'disabled') {
@@ -30,24 +30,23 @@ if (is_post()) {
             $resetUrl = url('reset-password.php?token=' . $token);
             Mailer::send(
                 $customer['email'],
-                'Reset your ' . setting('site_name', 'Daily Dose Export') . ' password',
+                sprintf(t('forgot.email_subject', 'Reset your %s password'), setting('site_name', 'Daily Dose Export')),
                 email_wrap(
-                    'Reset your password',
-                    '<p>Hello ' . e((string) $customer['first_name']) . ',</p>'
-                    . '<p>We received a request to reset your password. This link is valid for one hour and can be used once.</p>'
-                    . '<p>If you did not request this, you can safely ignore this email — your password has not changed.</p>',
-                    ['url' => $resetUrl, 'label' => 'Choose a new password']
+                    t('forgot.email_heading', 'Reset your password'),
+                    '<p>' . e(sprintf(t('auth.email_hello', 'Hello %s,'), (string) $customer['first_name'])) . '</p>'
+                    . '<p>' . e(t('forgot.email_body', 'We received a request to reset your password. This link is valid for one hour and can be used once. If you did not request this, you can safely ignore this email — your password has not changed.')) . '</p>',
+                    ['url' => $resetUrl, 'label' => t('forgot.email_button', 'Choose a new password')]
                 )
             );
         }
-        flash('success', 'If an account exists for that email address, a password reset link is on its way. Please check your inbox and spam folder.');
+        flash('success', t('forgot.success', 'If an account exists for that email address, a password reset link is on its way. Please check your inbox and spam folder.'));
         redirect('login.php');
     }
 }
 
 $seo = [
-    'title' => 'Forgot password | ' . setting('site_name', 'Daily Dose Export'),
-    'description' => 'Request a password reset link for your Daily Dose Export account.',
+    'title' => t('forgot.title', 'Forgot password') . ' | ' . setting('site_name', 'Daily Dose Export'),
+    'description' => t('forgot.meta', 'Request a password reset link for your Daily Dose Export account.'),
     'canonical' => url('forgot-password.php'),
     'robots' => 'noindex,follow',
 ];
@@ -58,8 +57,8 @@ require BASE_PATH . '/app/views/layout/header.php';
 
 <div class="container auth-page">
   <div class="auth-card auth-card-narrow">
-    <h1>Forgot your password?</h1>
-    <p class="auth-lead">Enter the email address linked to your account and we will send you a secure reset link.</p>
+    <h1><?= e(t('forgot.title', 'Forgot your password?')) ?></h1>
+    <p class="auth-lead"><?= e(t('forgot.lead', 'Enter the email address linked to your account and we will send you a secure reset link.')) ?></p>
 
     <?php if ($error !== ''): ?>
       <div class="alert alert-error" role="alert"><?= e($error) ?></div>
@@ -68,14 +67,14 @@ require BASE_PATH . '/app/views/layout/header.php';
     <form class="auth-form" method="post" action="<?= e(url('forgot-password.php')) ?>">
       <?= csrf_field() ?>
       <div class="field">
-        <label for="email">Email address</label>
+        <label for="email"><?= e(t('forgot.email', 'Email address')) ?></label>
         <input id="email" type="email" name="email" value="<?= e($email) ?>" required maxlength="190" autocomplete="email" autofocus>
       </div>
-      <button class="btn btn-primary btn-block" type="submit">Send reset link</button>
+      <button class="btn btn-primary btn-block" type="submit"><?= e(t('forgot.submit', 'Send reset link')) ?></button>
     </form>
 
-    <p class="auth-alt"><a href="<?= e(url('login.php')) ?>"><?= icon('arrow-left') ?> Back to log in</a></p>
-    <p class="auth-security"><?= icon('lock') ?> For your security, we never confirm whether an email address is registered.</p>
+    <p class="auth-alt"><a href="<?= e(url('login.php')) ?>"><?= icon('arrow-left') ?> <?= e(t('forgot.back', 'Back to log in')) ?></a></p>
+    <p class="auth-security"><?= icon('lock') ?> <?= e(t('forgot.security', 'For your security, we never confirm whether an email address is registered.')) ?></p>
   </div>
 </div>
 

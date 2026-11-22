@@ -146,7 +146,7 @@ Grouped tabs, all stored in `website_settings`:
 
 | Group | What it controls |
 |---|---|
-| General | Site name, tagline, slogan, announcement bar text/link |
+| General | Site name, tagline, slogan, announcement bar text/link, footer introduction |
 | Home | Hero eyebrow/title/text/note, newsletter copy |
 | About | Intro, mission, vision, core values (one per line), story |
 | Contact | Support phone, WhatsApp number & default message, public email, address, state, PIN, country, map link |

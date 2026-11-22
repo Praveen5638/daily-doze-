@@ -106,13 +106,113 @@ function setting(string $key, string $default = ''): string
     return Settings::get($key, $default);
 }
 
+function current_locale(): string
+{
+    return $GLOBALS['__locale'] ?? 'en';
+}
+
+function supported_locales(): array
+{
+    return ['en' => 'English', 'hi' => 'हिंदी'];
+}
+
 function t(string $key, ?string $fallback = null): string
 {
-    if (!isset($GLOBALS['__lang'])) {
+    if (!isset($GLOBALS['__lang']['en'])) {
         $file = BASE_PATH . '/app/lang/en.php';
-        $GLOBALS['__lang'] = is_file($file) ? (require $file) : [];
+        $GLOBALS['__lang']['en'] = is_file($file) ? (require $file) : [];
     }
-    return $GLOBALS['__lang'][$key] ?? $fallback ?? $key;
+    $locale = current_locale();
+    if ($locale !== 'en' && !isset($GLOBALS['__lang'][$locale])) {
+        $file = BASE_PATH . '/app/lang/' . $locale . '.php';
+        $GLOBALS['__lang'][$locale] = is_file($file) ? (require $file) : [];
+    }
+    return $GLOBALS['__lang'][$locale][$key]
+        ?? $GLOBALS['__lang']['en'][$key]
+        ?? $fallback
+        ?? $key;
+}
+
+function language_url(string $locale): string
+{
+    if (!isset(supported_locales()[$locale])) {
+        $locale = 'en';
+    }
+    $overrides = ['lang' => $locale];
+    $path = current_path();
+    if (preg_match('#^/(products|pages)/#', $path)) {
+        $overrides['slug'] = null;
+    }
+    if (str_starts_with($path, '/category/')) {
+        $overrides['category'] = null;
+    }
+    return page_url($overrides);
+}
+
+function requested_locale(): ?string
+{
+    $lang = $_GET['lang'] ?? null;
+    return is_string($lang) && array_key_exists($lang, supported_locales()) ? $lang : null;
+}
+
+function locale_variant_url(string $url, string $locale): string
+{
+    if (!array_key_exists($locale, supported_locales())) {
+        $locale = 'en';
+    }
+    $parts = parse_url($url);
+    if ($parts === false || !isset($parts['host'])) {
+        return $url;
+    }
+    $query = [];
+    if (isset($parts['query'])) {
+        parse_str($parts['query'], $query);
+    }
+    if ($locale === 'en') {
+        unset($query['lang']);
+    } else {
+        $query['lang'] = $locale;
+    }
+    $base = ($parts['scheme'] ?? 'https') . '://' . $parts['host'];
+    if (isset($parts['port'])) {
+        $base .= ':' . $parts['port'];
+    }
+    $base .= $parts['path'] ?? '/';
+    $qs = http_build_query($query);
+    return $base . ($qs !== '' ? '?' . $qs : '') . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+}
+
+function hreflang_links(string $canonical): array
+{
+    $base = locale_variant_url($canonical, 'en');
+    $links = [];
+    foreach (array_keys(supported_locales()) as $code) {
+        $links[] = ['hreflang' => $code, 'href' => locale_variant_url($base, $code)];
+    }
+    $links[] = ['hreflang' => 'x-default', 'href' => $base];
+    return $links;
+}
+
+function localized_setting(string $key, string $default = ''): string
+{
+    $locale = current_locale();
+    if ($locale !== 'en') {
+        $translated = setting($key . '_' . $locale);
+        if ($translated !== '') {
+            return $translated;
+        }
+    }
+    return setting($key, $default);
+}
+
+function category_label(array $category): string
+{
+    $slug = (string) ($category['slug'] ?? '');
+    $name = (string) ($category['name'] ?? $slug);
+    if ($slug === '') {
+        return $name;
+    }
+    return t('category.' . $slug, $name);
 }
 
 function money(mixed $amount): string
@@ -372,20 +472,22 @@ function rating_stars(float $average): string
 
 function order_status_label(string $status): string
 {
-    return [
+    $labels = [
         'pending' => 'Pending', 'confirmed' => 'Confirmed', 'processing' => 'Processing',
         'packed' => 'Packed', 'shipped' => 'Shipped', 'out_for_delivery' => 'Out for delivery',
         'delivered' => 'Delivered', 'cancelled' => 'Cancelled', 'return_requested' => 'Return requested',
         'returned' => 'Returned', 'refunded' => 'Refunded',
-    ][$status] ?? ucfirst(str_replace('_', ' ', $status));
+    ];
+    return t('order_status.' . $status, $labels[$status] ?? ucfirst(str_replace('_', ' ', $status)));
 }
 
 function payment_status_label(string $status): string
 {
-    return [
+    $labels = [
         'unpaid' => 'Unpaid', 'pending' => 'Payment pending', 'paid' => 'Paid',
         'failed' => 'Failed', 'refunded' => 'Refunded', 'partially_refunded' => 'Partially refunded',
-    ][$status] ?? ucfirst($status);
+    ];
+    return t('pay_status.' . $status, $labels[$status] ?? ucfirst($status));
 }
 
 function enquiry_status_label(string $status): string

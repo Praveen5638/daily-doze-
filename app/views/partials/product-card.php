@@ -17,17 +17,17 @@ $productUrl = url('products/' . $product['slug']);
     <a class="card-media-link" href="<?= e($productUrl) ?>" aria-label="<?= e($product['name']) ?>">
       <img src="<?= e(asset_url($product['primary_image'])) ?>" alt="<?= e($product['name']) ?>" width="640" height="640" loading="lazy" decoding="async">
       <?php if ($discount !== null): ?>
-        <span class="badge badge-save"><?= $discount ?>% off</span>
+        <span class="badge badge-save"><?= e(sprintf(t('product.off', '%d%% off'), $discount)) ?></span>
       <?php elseif (($product['is_new'] ?? 0) == 1): ?>
-        <span class="badge badge-new">New</span>
+        <span class="badge badge-new"><?= e(t('product.new', 'New')) ?></span>
       <?php endif; ?>
     </a>
-    <button class="wish-btn <?= $isWish ? 'is-active' : '' ?>" type="button" data-wishlist="<?= (int) $product['id'] ?>" aria-label="<?= $isWish ? 'Remove from wishlist' : 'Add to wishlist' ?>" aria-pressed="<?= $isWish ? 'true' : 'false' ?>">
+    <button class="wish-btn <?= $isWish ? 'is-active' : '' ?>" type="button" data-wishlist="<?= (int) $product['id'] ?>" aria-label="<?= $isWish ? e(t('product.remove_wishlist', 'Remove from wishlist')) : e(t('product.add_wishlist', 'Add to wishlist')) ?>" aria-pressed="<?= $isWish ? 'true' : 'false' ?>">
       <?= icon('heart') ?>
     </button>
   </div>
   <div class="card-body">
-    <p class="card-cat"><?= e($product['category_name']) ?></p>
+    <p class="card-cat"><?= e(category_label(['slug' => $product['category_slug'], 'name' => $product['category_name']])) ?></p>
     <h3 class="card-title"><a href="<?= e($productUrl) ?>"><?= e($product['name']) ?></a></h3>
     <p class="card-desc"><?= e(excerpt($product['short_description'], 72)) ?></p>
     <?php if ($reviewCount > 0): ?>
@@ -35,23 +35,23 @@ $productUrl = url('products/' . $product['slug']);
     <?php endif; ?>
     <div class="card-price-row">
       <?php if ($minPrice !== null): ?>
-        <p class="card-price"><span class="price-from">From</span> <?= money($minPrice) ?></p>
+        <p class="card-price"><span class="price-from"><?= e(t('common.from', 'From')) ?></span> <?= money($minPrice) ?></p>
         <?php if ($minMrp !== null && $minMrp > $minPrice): ?><p class="card-mrp"><?= money($minMrp) ?></p><?php endif; ?>
       <?php else: ?>
-        <p class="card-price is-request">Price on request</p>
+        <p class="card-price is-request"><?= e(t('common.price_on_request', 'Price on request')) ?></p>
       <?php endif; ?>
     </div>
     <p class="card-stock <?= $inStock && $minPrice !== null ? 'in' : 'out' ?>">
-      <?= $minPrice === null ? 'Priced per order' : ($inStock ? 'In stock' : 'Out of stock') ?>
+      <?= $minPrice === null ? e(t('common.priced_per_order', 'Priced per order')) : ($inStock ? e(t('common.in_stock', 'In stock')) : e(t('common.out_of_stock', 'Out of stock'))) ?>
     </p>
     <div class="card-actions">
       <?php if (!empty($product['default_variant_id']) && $inStock): ?>
         <button class="btn btn-primary btn-sm btn-add" type="button" data-add-to-cart="<?= (int) $product['default_variant_id'] ?>" data-product-name="<?= e($product['name']) ?>">
-          <?= icon('cart') ?> Add to cart
+          <?= icon('cart') ?> <?= e(t('common.add_to_cart', 'Add to cart')) ?>
         </button>
       <?php endif; ?>
       <a class="btn btn-ghost btn-sm <?= !empty($product['default_variant_id']) && $inStock ? '' : 'btn-block' ?>" href="<?= e($productUrl) ?>">
-        <?= $minPrice === null ? 'Enquire' : 'View details' ?>
+        <?= $minPrice === null ? e(t('common.enquire', 'Enquire')) : e(t('common.view_details', 'View details')) ?>
       </a>
     </div>
   </div>

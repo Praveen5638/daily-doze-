@@ -77,7 +77,35 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+$locale = (string) ($_SESSION['locale'] ?? $_COOKIE['dde_locale'] ?? 'en');
+if (!array_key_exists($locale, supported_locales())) {
+    $locale = 'en';
+}
+$requestedLocale = isset($_GET['lang']) && is_string($_GET['lang']) ? $_GET['lang'] : '';
+if ($requestedLocale !== '' && array_key_exists($requestedLocale, supported_locales())) {
+    $locale = $requestedLocale;
+    $_SESSION['locale'] = $locale;
+    setcookie('dde_locale', $locale, [
+        'expires' => time() + 31536000,
+        'path' => '/',
+        'secure' => IS_HTTPS,
+        'httponly' => false,
+        'samesite' => 'Lax',
+    ]);
+    // The default locale lives on clean URLs; non-default locales keep ?lang= so search engines can crawl them.
+    if ($locale === 'en' && !headers_sent() && !is_post()) {
+        $target = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+        $query = $_GET;
+        unset($query['lang']);
+        $qs = http_build_query($query);
+        header('Location: ' . $target . ($qs !== '' ? '?' . $qs : ''), true, 302);
+        exit;
+    }
+}
+$GLOBALS['__locale'] = $locale;
+
 if (!headers_sent()) {
+    header('Content-Language: ' . ($locale === 'hi' ? 'hi' : 'en'));
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: SAMEORIGIN');
     header('Referrer-Policy: strict-origin-when-cross-origin');

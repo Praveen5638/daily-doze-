@@ -1,17 +1,145 @@
+# Daily Dose Export — https://dailydoseexport.com
+# Public pages are open to search and AI answer engines. Account, checkout and admin areas are private.
+
 User-agent: *
+Allow: /
+Allow: /uploads/
 Disallow: /admin/
 Disallow: /api/
-Allow: /uploads/
-
 Disallow: /account
 Disallow: /cart
 Disallow: /checkout
 Disallow: /order-success
+Disallow: /pay
 Disallow: /track-order
 Disallow: /login
 Disallow: /register
 Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /logout
+Disallow: /newsletter
 
+# AI answer engines and crawlers (GEO): public content may be read and cited.
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: Claude-User
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+User-agent: CCBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /pay
+Disallow: /track-order
+
+# Site summary for AI assistants: https://dailydoseexport.com/llms.txt
 Sitemap: https://dailydoseexport.com/sitemap.xml

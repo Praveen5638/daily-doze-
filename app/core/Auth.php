@@ -43,15 +43,15 @@ final class Auth
         $bucket = 'customer:' . request_ip() . ':' . $email;
         if (!RateLimiter::hit($bucket, 'login', 6, 900)) {
             $minutes = max(1, (int) ceil(RateLimiter::retryAfter($bucket, 'login', 900) / 60));
-            return ['ok' => false, 'message' => "Too many attempts. Please try again in {$minutes} minute(s) or reset your password."];
+            return ['ok' => false, 'message' => sprintf(t('auth.flash_too_many', 'Too many attempts. Please try again in %d minute(s) or reset your password.'), $minutes)];
         }
 
         $customer = Database::one('SELECT * FROM customers WHERE email = ?', [$email]);
         if ($customer === null || !password_verify($password, (string) $customer['password_hash'])) {
-            return ['ok' => false, 'message' => 'Email or password is incorrect.'];
+            return ['ok' => false, 'message' => t('auth.flash_incorrect', 'Email or password is incorrect.')];
         }
         if ($customer['status'] === 'disabled') {
-            return ['ok' => false, 'message' => 'This account is disabled. Please contact customer support.'];
+            return ['ok' => false, 'message' => t('auth.flash_disabled', 'This account is disabled. Please contact customer support.')];
         }
 
         RateLimiter::clear($bucket, 'login');
@@ -62,7 +62,7 @@ final class Auth
         self::$customerLoaded = true;
         Database::update('customers', ['last_login_at' => date('Y-m-d H:i:s')], 'id = ?', [$customer['id']]);
         Cart::mergeGuestCart();
-        return ['ok' => true, 'message' => 'Welcome back.', 'customer' => $customer];
+        return ['ok' => true, 'message' => t('auth.flash_welcome', 'Welcome back.'), 'customer' => $customer];
     }
 
     public static function register(array $data): array
@@ -74,19 +74,19 @@ final class Auth
         $lastName = trim((string) $data['last_name'] ?? '');
 
         if ($firstName === '' || mb_strlen($firstName) > 80) {
-            return ['ok' => false, 'message' => 'Please enter your first name.'];
+            return ['ok' => false, 'message' => t('auth.flash_first', 'Please enter your first name.')];
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ['ok' => false, 'message' => 'Please enter a valid email address.'];
+            return ['ok' => false, 'message' => t('auth.flash_email', 'Please enter a valid email address.')];
         }
         if (strlen(preg_replace('/\D/', '', $phone) ?? '') < 10) {
-            return ['ok' => false, 'message' => 'Please enter a valid mobile number.'];
+            return ['ok' => false, 'message' => t('auth.flash_phone', 'Please enter a valid mobile number.')];
         }
         if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d).{8,72}$/', $password)) {
-            return ['ok' => false, 'message' => 'Password must be at least 8 characters and include a letter and a number.'];
+            return ['ok' => false, 'message' => t('auth.flash_password', 'Password must be at least 8 characters and include a letter and a number.')];
         }
         if (Database::value('SELECT COUNT(*) FROM customers WHERE email = ?', [$email]) > 0) {
-            return ['ok' => false, 'message' => 'An account with this email already exists. Please log in instead.'];
+            return ['ok' => false, 'message' => t('auth.flash_exists', 'An account with this email already exists. Please log in instead.')];
         }
 
         $id = Database::insert('customers', [
@@ -99,7 +99,7 @@ final class Auth
         ]);
         $customer = Database::one('SELECT * FROM customers WHERE id = ?', [$id]);
         if ($customer === null) {
-            return ['ok' => false, 'message' => 'Could not create the account. Please try again.'];
+            return ['ok' => false, 'message' => t('auth.flash_create_failed', 'Could not create the account. Please try again.')];
         }
 
         session_regenerate_id(true);
@@ -119,7 +119,7 @@ final class Auth
                 ['url' => url('shop'), 'label' => 'Explore the shop']
             )
         );
-        return ['ok' => true, 'message' => 'Your account is ready.', 'customer' => $customer];
+        return ['ok' => true, 'message' => t('auth.flash_ready', 'Your account is ready.'), 'customer' => $customer];
     }
 
     public static function logout(): void

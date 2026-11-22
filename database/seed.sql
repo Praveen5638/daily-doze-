@@ -59,6 +59,7 @@ INSERT INTO website_settings (setting_key, setting_value, setting_group) VALUES
 ('razorpay_key_id','','payments'),
 ('announcement_text','','general'),
 ('announcement_link','','general'),
+('footer_text','Natural Indian spices, grains, millets, teas and dry fruits for homes and businesses, packed with care in Varanasi.','general'),
 ('hero_eyebrow','Natural food · Varanasi, India','home'),
 ('hero_title','Pure From Farm To World','home'),
 ('hero_text','Natural spices, grains, millets, teas and dry fruits, sourced from Indian farms and packed with care in Varanasi.','home'),
@@ -78,6 +79,27 @@ INSERT INTO website_settings (setting_key, setting_value, setting_group) VALUES
 ('maintenance_mode','0','general'),
 ('whatsapp_default_message','Hello Daily Dose Export, I would like to know more about your products.','contact'),
 ('reviews_enabled','1','general');
+
+-- Hindi storefront content (locale: hi)
+INSERT INTO website_settings (setting_key, setting_value, setting_group) VALUES
+('tagline_hi','खेत से दुनिया तक, शुद्ध','general'),
+('slogan_hi','हर कौर, स्वास्थ्य का वादा।','general'),
+('footer_text_hi','घरों और व्यवसायों के लिए प्राकृतिक भारतीय मसाले, अनाज, मिलेट, चाय और सूखे मेवे — वाराणसी में सावधानी से पैक।','general'),
+('hero_eyebrow_hi','प्राकृतिक भोजन · वाराणसी, भारत','home'),
+('hero_title_hi','खेत से दुनिया तक, शुद्ध','home'),
+('hero_text_hi','भारतीय खेतों से प्राप्त प्राकृतिक मसाले, अनाज, मिलेट, चाय और सूखे मेवे — वाराणसी में सावधानी से पैक।','home'),
+('hero_note_hi','हर कौर, स्वास्थ्य का वादा।','home'),
+('about_intro_hi','डेली डोज़ एक्सपोर्ट भारतीय खेतों से प्राकृतिक और कृषि खाद्य उत्पाद भारत और दुनिया भर के घरों और व्यवसायों तक पहुँचाता है।','about'),
+('mission_hi','प्रकृति की अच्छाई हर घर तक पहुँचाना — हर कौर में गुणवत्ता और देखभाल के साथ।','about'),
+('vision_hi','शुद्ध, प्राकृतिक और गुणवत्तापूर्ण भोजन से एक स्वस्थ दुनिया बनाना।','about'),
+('core_values_hi','शुद्धता\nगुणवत्ता\nहर पीढ़ी की देखभाल\nकिसान सहयोग\nईमानदारी\nसस्टेनेबिलिटी\nग्राहक विश्वास','about'),
+('story_title_hi','भारतीय खेतों से आपकी रसोई तक','about'),
+('story_text_hi','डेली डोज़ एक्सपोर्ट की शुरुआत वाराणसी में एक सरल विश्वास के साथ हुई: रोज़ का भोजन ईमानदार, अच्छी तरह प्राप्त और सावधानी से संभाला गया होना चाहिए। हम भारत भर के कृषि आपूर्ति साझेदारों के साथ काम करते हैं, साफ और सावधान प्रक्रिया पर ध्यान देते हैं, और हर उत्पाद को इस तरह पैक करते हैं कि वह अच्छी स्थिति में आप तक पहुँचे। आप परिवार के लिए पका रहे हों या व्यवसाय के लिए सोर्स कर रहे हों, हमारी टीम मदद के लिए यहाँ है।','about'),
+('newsletter_title_hi','संपर्क में रहें','home'),
+('newsletter_text_hi','डेली डोज़ एक्सपोर्ट टीम से उत्पाद अपडेट और सोर्सिंग नोट्स प्राप्त करें।','home'),
+('default_meta_description_hi','डेली डोज़ एक्सपोर्ट खुदरा, थोक और निर्यात पूछताछ के लिए प्राकृतिक भारतीय मसाले, अनाज, मिलेट, कुकीज़, चाय, सेंधा नमक और सूखे मेवे उपलब्ध कराता है।','seo'),
+('shipping_note_hi','डिलीवरी शुल्क और समय हमारी टीम गंतव्य और ऑर्डर के आकार के आधार पर पुष्टि करती है।','commerce')
+ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), setting_group = VALUES(setting_group);
 
 -- ---------------------------------------------------------------- categories
 INSERT INTO categories (id, name, slug, description, image, sort_order, status) VALUES
@@ -177,7 +199,7 @@ INSERT INTO cms_pages (title, slug, body, meta_title, meta_description, status) 
 ('Return and Refund Policy','return-refund-policy','<p><strong>Draft — pending owner and legal review.</strong></p><p>This policy will set out the conditions for returns, replacements and refunds for food products, including reporting damaged or incorrect items within the period confirmed by the business.</p><p>For urgent help with an order, please contact us using the phone number on the Contact page.</p>','Return and Refund Policy | Daily Dose Export','Returns and refunds for Daily Dose Export orders. Draft pending owner review.','draft'),
 ('Cancellation Policy','cancellation-policy','<p><strong>Draft — pending owner and legal review.</strong></p><p>This policy will explain when an order can be cancelled, how cancellations are processed and how prepaid refunds are returned.</p>','Cancellation Policy | Daily Dose Export','Order cancellation information. Draft pending owner review.','draft'),
 ('Cookie Policy','cookie-policy','<p><strong>Draft — pending owner and legal review.</strong></p><p>This website uses essential cookies for login sessions, the shopping cart and security. Analytics or marketing cookies are not enabled unless configured by the business and disclosed here.</p>','Cookie Policy | Daily Dose Export','Cookies used by dailydoseexport.com. Draft pending owner review.','draft'),
-('Frequently Asked Questions','faq','<h2>Ordering</h2><p><strong>Can I order without creating an account?</strong><br>Yes. Guest checkout is available. You can also create an account to save addresses and view order history.</p><h2>Wholesale and export</h2><p><strong>Do you supply bulk quantities?</strong><br>Yes. Use the Wholesale page for domestic bulk enquiries or the Export Enquiry page for international requirements. Our team will confirm availability, packing and pricing.</p><h2>Product information</h2><p><strong>Where are ingredients and allergen details?</strong><br>Approved declarations are printed on the product pack. Where a declaration is not yet published on this website, our team can share the details for the specific batch.</p><h2>Payments</h2><p><strong>Which payment methods are available?</strong><br>Available methods are shown at checkout and may include online payment and cash on delivery where enabled by the business.</p>','Frequently Asked Questions | Daily Dose Export','Ordering, wholesale and product questions.','published');
+('Frequently Asked Questions','faq','<h2>Ordering</h2><p><strong>Can I order without creating an account?</strong><br>Yes. Guest checkout is available. You can also create an account to save addresses and view order history.</p><h2>Wholesale and export</h2><p><strong>Do you supply bulk quantities?</strong><br>Yes. Use the Wholesale page for domestic bulk enquiries or the Export Enquiry page for international requirements. Our team will confirm availability, packing and pricing.</p><h2>Product information</h2><p><strong>Where are ingredients and allergen details?</strong><br>Approved declarations are printed on the product pack. Where a declaration is not yet published on this website, our team can share the details for the specific batch.</p><h2>Payments</h2><p><strong>Which payment methods are available?</strong><br>Available methods are shown at checkout and may include online payment and cash on delivery where enabled by the business.</p>','Frequently Asked Questions | Daily Dose Export','Ordering, guest checkout, wholesale and export enquiries, payments and product information — answered by Daily Dose Export, Varanasi.','published');
 
 -- ---------------------------------------------------------------- shipping defaults
 INSERT INTO shipping_methods (name, description, base_rate, free_over_amount, estimated_days, status, sort_order) VALUES

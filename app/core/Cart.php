@@ -74,10 +74,10 @@ final class Cart
             [$variantId]
         );
         if ($variant === null || $variant['status'] !== 'active' || $variant['product_status'] !== 'published') {
-            return ['ok' => false, 'message' => 'This product is not available right now.'];
+            return ['ok' => false, 'message' => t('cart.flash_unavailable', 'This product is not available right now.')];
         }
         if ($variant['price'] === null) {
-            return ['ok' => false, 'message' => 'This pack is priced on request. Please send us an enquiry.'];
+            return ['ok' => false, 'message' => t('cart.flash_price_enquiry', 'This pack is priced on request. Please send us an enquiry.')];
         }
         $existing = (int) (self::raw()[$variantId] ?? 0);
         $newQuantity = $existing + $quantity;
@@ -86,19 +86,19 @@ final class Cart
             return [
                 'ok' => false,
                 'message' => $available > 0
-                    ? 'Only ' . $available . ' pack(s) of ' . $variant['pack_size'] . ' are available.'
-                    : 'This pack is currently out of stock.',
+                    ? sprintf(t('cart.flash_only_of_pack', 'Only %1$d pack(s) of %2$s are available.'), $available, $variant['pack_size'])
+                    : t('cart.flash_out_of_stock', 'This pack is currently out of stock.'),
             ];
         }
         self::setQuantity($variantId, $newQuantity);
-        return ['ok' => true, 'message' => 'Added to cart.', 'count' => self::count()];
+        return ['ok' => true, 'message' => t('cart.flash_added', 'Added to cart.'), 'count' => self::count()];
     }
 
     public static function updateQuantity(int $variantId, int $quantity): array
     {
         if ($quantity <= 0) {
             self::setQuantity($variantId, 0);
-            return ['ok' => true, 'message' => 'Item removed.', 'count' => self::count()];
+            return ['ok' => true, 'message' => t('cart.flash_removed', 'Item removed.'), 'count' => self::count()];
         }
         $quantity = min(99, $quantity);
         $variant = Database::one(
@@ -107,13 +107,13 @@ final class Cart
             [$variantId]
         );
         if ($variant === null) {
-            return ['ok' => false, 'message' => 'This product is no longer available.'];
+            return ['ok' => false, 'message' => t('cart.flash_no_longer', 'This product is no longer available.')];
         }
         if ($quantity > (int) $variant['stock_qty']) {
-            return ['ok' => false, 'message' => 'Only ' . (int) $variant['stock_qty'] . ' pack(s) available.'];
+            return ['ok' => false, 'message' => sprintf(t('cart.flash_only', 'Only %d pack(s) available.'), (int) $variant['stock_qty'])];
         }
         self::setQuantity($variantId, $quantity);
-        return ['ok' => true, 'message' => 'Cart updated.', 'count' => self::count()];
+        return ['ok' => true, 'message' => t('cart.flash_updated', 'Cart updated.'), 'count' => self::count()];
     }
 
     public static function remove(int $variantId): void

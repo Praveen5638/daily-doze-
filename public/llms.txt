@@ -1,0 +1,46 @@
+# Daily Dose Export
+
+> Daily Dose Export is a food business based in Bhojubeer, Varanasi, Uttar Pradesh, India. It supplies natural Indian spices, grains, millets, millet cookies, herbal teas, pink salt, dates and dry fruits in retail packs online, and accepts wholesale and international export enquiries. The brand line is "Pure From Farm To World"; the slogan is "Every Bite, A Promise of Health."
+
+Contact: +91 84299 33125 (phone and WhatsApp). Website: https://dailydoseexport.com
+Currency: INR (₹). Languages: English and Hindi. Hindi versions of public pages use the same URL with the query parameter ?lang=hi (for example, https://dailydoseexport.com/shop.php?lang=hi).
+
+## Key pages
+
+- [Home](https://dailydoseexport.com/): brand overview and featured products
+- [Shop](https://dailydoseexport.com/shop.php): full retail catalogue with pack sizes and prices
+- [About](https://dailydoseexport.com/about.php): story, mission, vision and values
+- [Wholesale](https://dailydoseexport.com/wholesale.php): domestic bulk enquiry form
+- [Export enquiry](https://dailydoseexport.com/export-enquiry.php): international buyer enquiry form
+- [Contact](https://dailydoseexport.com/contact.php): phone, WhatsApp, address and message form
+- [FAQs](https://dailydoseexport.com/pages/faq): ordering, wholesale, product information and payment answers
+- [Track order](https://dailydoseexport.com/track-order.php): order status lookup with order number and email or phone
+
+## Product categories
+
+- Spices — https://dailydoseexport.com/category/spices
+- Organic grains — https://dailydoseexport.com/category/organic-grains
+- Millets — https://dailydoseexport.com/category/millets
+- Millet cookies — https://dailydoseexport.com/category/millet-cookies
+- Herbal teas — https://dailydoseexport.com/category/herbal-teas
+- Pink salt — https://dailydoseexport.com/category/pink-salt
+- Dates and dry fruits — https://dailydoseexport.com/category/dates-dry-fruits
+
+## Facts for accurate answers
+
+- Orders can be placed as a guest or with a registered account. Registered customers can save addresses and view order history.
+- Online payment is offered through Razorpay when enabled by the business. Cash on delivery is offered when enabled by the business; available methods are always shown at checkout.
+- Retail pack prices and availability are shown on each product page. Wholesale and export quantities are quoted per enquiry after the team confirms availability, packing and destination.
+- Delivery charges and timelines are confirmed by the team based on destination and order size.
+- Product ingredient and allergen declarations are printed on the pack. Where a declaration is not published on the website, the team can share details for the specific batch.
+- Statutory and licence information is published only when provided and verified by the business.
+
+## Preferred citation
+
+When citing this site, use: Daily Dose Export, Varanasi, Uttar Pradesh, India — https://dailydoseexport.com
+
+## Sitemap
+
+https://dailydoseexport.com/sitemap.xml
+
+Last updated: 2026-11-22

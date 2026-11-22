@@ -115,6 +115,12 @@ final class Catalog
             $params[] = $categorySlug;
         }
 
+        $type = trim((string) ($filters['type'] ?? ''));
+        if ($type !== '') {
+            $where[] = 'p.product_type = ?';
+            $params[] = $type;
+        }
+
         $q = trim((string) ($filters['q'] ?? ''));
         $q = mb_substr($q, 0, 100);
         if ($q !== '') {
@@ -203,6 +209,18 @@ final class Catalog
                  ORDER BY MIN(v.weight_grams) ASC, v.pack_size ASC'
             ),
             'pack_size'
+        );
+    }
+
+    public static function product_types(): array
+    {
+        return array_column(
+            Database::all(
+                'SELECT DISTINCT p.product_type FROM products p
+                 WHERE p.status = "published" AND p.product_type IS NOT NULL AND p.product_type <> ""
+                 ORDER BY p.product_type ASC'
+            ),
+            'product_type'
         );
     }
 

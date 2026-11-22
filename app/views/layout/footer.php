@@ -17,9 +17,9 @@ $whatsappMessage = rawurlencode(setting('whatsapp_default_message', 'Hello Daily
 <section class="newsletter-band" aria-labelledby="newsletter-title">
   <div class="container newsletter-inner">
     <div class="newsletter-copy">
-      <p class="eyebrow">From our kitchen to your inbox</p>
-      <h2 id="newsletter-title"><?= e(setting('newsletter_title', 'Stay in touch')) ?></h2>
-      <p><?= e(setting('newsletter_text')) ?></p>
+      <p class="eyebrow"><?= e(t('newsletter.eyebrow', 'From our kitchen to your inbox')) ?></p>
+      <h2 id="newsletter-title"><?= e(localized_setting('newsletter_title', 'Stay in touch')) ?></h2>
+      <p><?= e(localized_setting('newsletter_text')) ?></p>
     </div>
     <form class="newsletter-form" action="<?= e(url('newsletter.php')) ?>" method="post" data-newsletter-form>
       <?= csrf_field() ?>
@@ -28,11 +28,11 @@ $whatsappMessage = rawurlencode(setting('whatsapp_default_message', 'Hello Daily
         <label for="newsletter-website">Company website</label>
         <input id="newsletter-website" type="text" name="company_website" tabindex="-1" autocomplete="off">
       </div>
-      <label class="sr-only" for="newsletter-email">Email address</label>
-      <input id="newsletter-email" type="email" name="email" placeholder="Your email address" required maxlength="190" autocomplete="email">
-      <button class="btn btn-light" type="submit">Subscribe</button>
+      <label class="sr-only" for="newsletter-email"><?= e(t('newsletter.email_label', 'Email address')) ?></label>
+      <input id="newsletter-email" type="email" name="email" placeholder="<?= e(t('newsletter.placeholder', 'Your email address')) ?>" required maxlength="190" autocomplete="email">
+      <button class="btn btn-light" type="submit"><?= e(t('newsletter.button', 'Subscribe')) ?></button>
       <p class="form-message" data-form-message role="status"></p>
-      <p class="newsletter-note">Occasional updates only. Unsubscribe anytime.</p>
+      <p class="newsletter-note"><?= e(t('newsletter.note', 'Occasional updates only. Unsubscribe anytime.')) ?></p>
     </form>
   </div>
 </section>
@@ -44,8 +44,8 @@ $whatsappMessage = rawurlencode(setting('whatsapp_default_message', 'Hello Daily
         <span class="brand-mark"><?= icon('leaf') ?></span>
         <span class="brand-text"><span class="brand-name">Daily Dose</span><span class="brand-sub">Export</span></span>
       </a>
-      <p class="footer-tagline"><?= e(setting('tagline', 'Pure From Farm To World')) ?></p>
-      <p class="footer-blurb"><?= e(setting('slogan', 'Every Bite, A Promise of Health.')) ?> Natural Indian spices, grains, millets, teas and dry fruits for homes and businesses, packed with care in Varanasi.</p>
+      <p class="footer-tagline"><?= e(localized_setting('tagline', 'Pure From Farm To World')) ?></p>
+      <p class="footer-blurb"><?= e(localized_setting('slogan', 'Every Bite, A Promise of Health.')) ?> <?= e(localized_setting('footer_text', 'Natural Indian spices, grains, millets, teas and dry fruits for homes and businesses, packed with care in Varanasi.')) ?></p>
       <div class="footer-contact">
         <a href="tel:<?= e(preg_replace('/\s+/', '', $phone)) ?>"><?= icon('phone') ?> <?= e($phone) ?></a>
         <?php if ($whatsapp !== ''): ?>
@@ -61,29 +61,29 @@ $whatsappMessage = rawurlencode(setting('whatsapp_default_message', 'Hello Daily
     </div>
 
     <div class="footer-col">
-      <h3>Shop</h3>
+      <h3><?= e(t('nav.shop', 'Shop')) ?></h3>
       <ul>
-        <li><a href="<?= e(url('shop.php')) ?>">All products</a></li>
+        <li><a href="<?= e(url('shop.php')) ?>"><?= e(t('nav.all_products', 'All products')) ?></a></li>
         <?php foreach (array_slice($footerCategories, 0, 6) as $cat): ?>
-          <li><a href="<?= e(url('category/' . $cat['slug'])) ?>"><?= e($cat['name']) ?></a></li>
+          <li><a href="<?= e(url('category/' . $cat['slug'])) ?>"><?= e(category_label($cat)) ?></a></li>
         <?php endforeach; ?>
       </ul>
     </div>
 
     <div class="footer-col">
-      <h3>Company</h3>
+      <h3><?= e(t('footer.company', 'Company')) ?></h3>
       <ul>
-        <li><a href="<?= e(url('about.php')) ?>">About us</a></li>
-        <li><a href="<?= e(url('wholesale.php')) ?>">Wholesale</a></li>
-        <li><a href="<?= e(url('export-enquiry.php')) ?>">Export enquiry</a></li>
-        <li><a href="<?= e(url('track-order.php')) ?>">Track your order</a></li>
-        <li><a href="<?= e(url('contact.php')) ?>">Contact</a></li>
-        <?php if ($faqPage): ?><li><a href="<?= e(url('pages/' . $faqPage['slug'])) ?>">FAQs</a></li><?php endif; ?>
+        <li><a href="<?= e(url('about.php')) ?>"><?= e(t('footer.about', 'About us')) ?></a></li>
+        <li><a href="<?= e(url('wholesale.php')) ?>"><?= e(t('nav.wholesale', 'Wholesale')) ?></a></li>
+        <li><a href="<?= e(url('export-enquiry.php')) ?>"><?= e(t('footer.export_enquiry', 'Export enquiry')) ?></a></li>
+        <li><a href="<?= e(url('track-order.php')) ?>"><?= e(t('footer.track_order', 'Track your order')) ?></a></li>
+        <li><a href="<?= e(url('contact.php')) ?>"><?= e(t('nav.contact', 'Contact')) ?></a></li>
+        <?php if ($faqPage): ?><li><a href="<?= e(url('pages/' . $faqPage['slug'])) ?>"><?= e(t('footer.faqs', 'FAQs')) ?></a></li><?php endif; ?>
       </ul>
     </div>
 
     <div class="footer-col">
-      <h3>Policies</h3>
+      <h3><?= e(t('footer.policies', 'Policies')) ?></h3>
       <ul>
         <?php foreach ($policyPages as $page): ?>
           <li><a href="<?= e(url('pages/' . $page['slug'])) ?>"><?= e($page['title']) ?></a></li>
@@ -93,16 +93,16 @@ $whatsappMessage = rawurlencode(setting('whatsapp_default_message', 'Hello Daily
   </div>
 
   <div class="container footer-bottom">
-    <p>&copy; <?= date('Y') ?> <?= e(setting('site_name', 'Daily Dose Export')) ?>. All rights reserved.</p>
-    <p class="footer-fineprint">Product availability, pricing and delivery are confirmed at the time of order. Statutory information is shown only when verified and provided by the business.</p>
-    <p class="footer-made">Varanasi, Uttar Pradesh, India</p>
+    <p>&copy; <?= date('Y') ?> <?= e(setting('site_name', 'Daily Dose Export')) ?>. <?= e(t('footer.rights', 'All rights reserved.')) ?></p>
+    <p class="footer-fineprint"><?= e(t('footer.fineprint', 'Product availability, pricing and delivery are confirmed at the time of order. Statutory information is shown only when verified and provided by the business.')) ?></p>
+    <p class="footer-made"><?= e(t('footer.location', 'Varanasi, Uttar Pradesh, India')) ?></p>
   </div>
 </footer>
 
 <?php if ($whatsapp !== ''): ?>
-  <a class="whatsapp-float" href="https://wa.me/<?= e($whatsapp) ?>?text=<?= $whatsappMessage ?>" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+  <a class="whatsapp-float" href="https://wa.me/<?= e($whatsapp) ?>?text=<?= $whatsappMessage ?>" target="_blank" rel="noopener" aria-label="<?= e(t('footer.whatsapp_aria', 'Chat with us on WhatsApp')) ?>">
     <?= icon('whatsapp') ?>
-    <span class="whatsapp-label">Chat with us</span>
+    <span class="whatsapp-label"><?= e(t('footer.whatsapp', 'Chat with us')) ?></span>
   </a>
 <?php endif; ?>
 

@@ -13,19 +13,19 @@ final class Enquiry
         $message = trim((string) ($data['message'] ?? ''));
 
         if ($name === '' || mb_strlen($name) > 120) {
-            return ['ok' => false, 'message' => 'Please enter your full name.'];
+            return ['ok' => false, 'message' => t('enquiry.flash_name', 'Please enter your full name.')];
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ['ok' => false, 'message' => 'Please enter a valid email address.'];
+            return ['ok' => false, 'message' => t('enquiry.flash_email', 'Please enter a valid email address.')];
         }
         if (strlen(preg_replace('/\D/', '', $phone) ?? '') < 7) {
-            return ['ok' => false, 'message' => 'Please enter a valid phone number.'];
+            return ['ok' => false, 'message' => t('enquiry.flash_phone', 'Please enter a valid phone number.')];
         }
         if ($country === '') {
-            return ['ok' => false, 'message' => 'Please enter your country.'];
+            return ['ok' => false, 'message' => t('enquiry.flash_country', 'Please enter your country.')];
         }
         if (mb_strlen($message) > 3000) {
-            return ['ok' => false, 'message' => 'Please keep your message under 3000 characters.'];
+            return ['ok' => false, 'message' => t('enquiry.flash_message_long', 'Please keep your message under 3000 characters.')];
         }
         $buyerType = $type === 'export' ? 'export' : (string) ($data['buyer_type'] ?? 'wholesale');
         if (!in_array($buyerType, ['retail', 'wholesale', 'export'], true)) {
@@ -88,7 +88,7 @@ final class Enquiry
             )
         );
 
-        return ['ok' => true, 'message' => 'Thank you. Your enquiry has been sent — reference ' . $reference . '.', 'reference' => $reference];
+        return ['ok' => true, 'message' => sprintf(t('enquiry.flash_sent', 'Thank you. Your enquiry has been sent — reference %s.'), $reference), 'reference' => $reference];
     }
 
     public static function contact(array $data): array
@@ -100,16 +100,16 @@ final class Enquiry
         $message = trim((string) ($data['message'] ?? ''));
 
         if ($name === '' || mb_strlen($name) > 120) {
-            return ['ok' => false, 'message' => 'Please enter your name.'];
+            return ['ok' => false, 'message' => t('enquiry.flash_contact_name', 'Please enter your name.')];
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ['ok' => false, 'message' => 'Please enter a valid email address.'];
+            return ['ok' => false, 'message' => t('enquiry.flash_email', 'Please enter a valid email address.')];
         }
         if ($subject === '') {
             $subject = 'Website enquiry';
         }
         if ($message === '' || mb_strlen($message) > 3000) {
-            return ['ok' => false, 'message' => 'Please write a message (up to 3000 characters).'];
+            return ['ok' => false, 'message' => t('enquiry.flash_contact_message', 'Please write a message (up to 3000 characters).')];
         }
 
         Database::insert('contact_messages', [
@@ -129,6 +129,6 @@ final class Enquiry
             'We received your message — ' . setting('site_name', 'Daily Dose Export'),
             email_wrap('Thank you for contacting us', '<p>Hello ' . e($name) . ',</p><p>Our team has received your message and will respond as soon as possible.</p><p><em>Your message:</em><br>' . nl2br(e($message)) . '</p>')
         );
-        return ['ok' => true, 'message' => 'Thank you. Your message has been sent.'];
+        return ['ok' => true, 'message' => t('enquiry.flash_contact_sent', 'Thank you. Your message has been sent.')];
     }
 }

@@ -71,6 +71,52 @@
     if (typeof data.wishlist_count !== 'undefined') setBadge('[data-wishlist-count]', data.wishlist_count);
   }
 
+  /* ---------------- Theme ---------------- */
+  var themeRoot = document.documentElement;
+  var themeToggles = $$('[data-theme-toggle]');
+
+  function currentTheme() {
+    return themeRoot.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function syncThemeControls() {
+    var isDark = currentTheme() === 'dark';
+    var label = isDark ? themeRoot.getAttribute('data-theme-light-label') : themeRoot.getAttribute('data-theme-dark-label');
+    themeToggles.forEach(function (button) {
+      button.setAttribute('aria-label', label);
+      button.setAttribute('title', label);
+      button.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    });
+    var meta = $('meta[data-theme-color]');
+    if (meta) meta.setAttribute('content', isDark ? '#0D1713' : '#173F32');
+  }
+
+  function setTheme(theme, persist) {
+    themeRoot.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+    if (persist !== false) {
+      try { localStorage.setItem('dde-theme', theme); } catch (e) {}
+    }
+    syncThemeControls();
+  }
+
+  document.addEventListener('click', function (event) {
+    if (!event.target.closest('[data-theme-toggle]')) return;
+    event.preventDefault();
+    setTheme(currentTheme() === 'dark' ? 'light' : 'dark');
+  });
+
+  if (window.matchMedia) {
+    var themeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    var onSystemTheme = function (event) {
+      var saved = null;
+      try { saved = localStorage.getItem('dde-theme'); } catch (e) {}
+      if (!saved) setTheme(event.matches ? 'dark' : 'light', false);
+    };
+    if (themeQuery.addEventListener) themeQuery.addEventListener('change', onSystemTheme);
+    else if (themeQuery.addListener) themeQuery.addListener(onSystemTheme);
+  }
+  syncThemeControls();
+
   /* ---------------- Navigation drawer ---------------- */
   var nav = null, navBackdrop = null, navToggle = null;
 

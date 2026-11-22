@@ -11,29 +11,29 @@ final class Coupon
             return $empty;
         }
         if ($subtotal <= 0) {
-            return array_merge($empty, ['message' => 'Add products to your cart before applying a coupon.']);
+            return array_merge($empty, ['message' => t('coupon.empty_cart', 'Add products to your cart before applying a coupon.')]);
         }
 
         $coupon = Database::one('SELECT * FROM coupons WHERE code = ? AND status = "active"', [$code]);
         if ($coupon === null) {
-            return array_merge($empty, ['message' => 'This coupon code is not valid.']);
+            return array_merge($empty, ['message' => t('coupon.invalid', 'This coupon code is not valid.')]);
         }
         $now = date('Y-m-d H:i:s');
         if (!empty($coupon['starts_at']) && $coupon['starts_at'] > $now) {
-            return array_merge($empty, ['message' => 'This coupon is not active yet.']);
+            return array_merge($empty, ['message' => t('coupon.not_active', 'This coupon is not active yet.')]);
         }
         if (!empty($coupon['expires_at']) && $coupon['expires_at'] < $now) {
-            return array_merge($empty, ['message' => 'This coupon has expired.']);
+            return array_merge($empty, ['message' => t('coupon.expired', 'This coupon has expired.')]);
         }
         if ((float) $coupon['min_order_amount'] > $subtotal) {
             return array_merge($empty, [
-                'message' => 'This coupon needs a minimum order of ' . money($coupon['min_order_amount']) . '.',
+                'message' => sprintf(t('coupon.min_order', 'This coupon needs a minimum order of %s.'), money($coupon['min_order_amount'])),
             ]);
         }
         if ($coupon['usage_limit'] !== null) {
             $used = (int) Database::value('SELECT COUNT(*) FROM coupon_usage WHERE coupon_id = ?', [$coupon['id']]);
             if ($used >= (int) $coupon['usage_limit']) {
-                return array_merge($empty, ['message' => 'This coupon has reached its usage limit.']);
+                return array_merge($empty, ['message' => t('coupon.usage_limit', 'This coupon has reached its usage limit.')]);
             }
         }
         if ($coupon['per_customer_limit'] !== null && (int) $coupon['per_customer_limit'] > 0) {
@@ -53,7 +53,7 @@ final class Coupon
                     $params
                 );
                 if ($usedByCustomer >= (int) $coupon['per_customer_limit']) {
-                    return array_merge($empty, ['message' => 'You have already used this coupon the maximum number of times.']);
+                    return array_merge($empty, ['message' => t('coupon.used_max', 'You have already used this coupon the maximum number of times.')]);
                 }
             }
         }
@@ -72,7 +72,7 @@ final class Coupon
             $eligible += (float) $item['price'] * (int) $item['quantity'];
         }
         if ($eligible <= 0) {
-            return array_merge($empty, ['message' => 'This coupon does not apply to the items in your cart.']);
+            return array_merge($empty, ['message' => t('coupon.not_applicable', 'This coupon does not apply to the items in your cart.')]);
         }
 
         $discount = $coupon['type'] === 'percent'
@@ -87,7 +87,7 @@ final class Coupon
             'ok' => true,
             'coupon' => $coupon,
             'discount' => $discount,
-            'message' => 'Coupon ' . $coupon['code'] . ' applied — you saved ' . money($discount) . '.',
+            'message' => sprintf(t('coupon.applied', 'Coupon %1$s applied — you saved %2$s.'), $coupon['code'], money($discount)),
         ];
     }
 }

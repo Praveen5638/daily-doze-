@@ -11,6 +11,7 @@ $groupDefinitions = [
         ['slogan', 'Slogan', 'text', ['max' => 190]],
         ['announcement_text', 'Announcement bar text', 'text', ['max' => 190, 'hint' => 'Leave empty to hide the announcement bar.']],
         ['announcement_link', 'Announcement link', 'text', ['max' => 255, 'hint' => 'Relative path such as shop.php, or a full https:// link.']],
+        ['footer_text', 'Footer introduction', 'textarea', ['max' => 400, 'hint' => 'Shown in the footer below the brand slogan.']],
     ]],
     'home' => ['label' => 'Home page', 'fields' => [
         ['hero_eyebrow', 'Hero eyebrow', 'text', ['max' => 120]],

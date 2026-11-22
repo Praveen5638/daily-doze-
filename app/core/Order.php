@@ -7,7 +7,7 @@ final class Order
     {
         $idempotencyKey = trim($idempotencyKey);
         if (!preg_match('/^[a-f0-9]{16,64}$/i', $idempotencyKey)) {
-            return ['ok' => false, 'message' => 'Your checkout session expired. Please reload the page and try again.'];
+            return ['ok' => false, 'message' => t('order.error_expired', 'Your checkout session expired. Please reload the page and try again.')];
         }
         $existing = Database::one('SELECT * FROM orders WHERE idempotency_key = ?', [$idempotencyKey]);
         if ($existing !== null) {
@@ -18,39 +18,39 @@ final class Order
         $email = strtolower(trim((string) ($data['email'] ?? '')));
         $phone = preg_replace('/[^0-9+]/', '', (string) ($data['phone'] ?? '')) ?? '';
         if ($name === '' || mb_strlen($name) > 120) {
-            return ['ok' => false, 'message' => 'Please enter the customer name.'];
+            return ['ok' => false, 'message' => t('order.error_name', 'Please enter the customer name.')];
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ['ok' => false, 'message' => 'Please enter a valid email address for order updates.'];
+            return ['ok' => false, 'message' => t('order.error_email', 'Please enter a valid email address for order updates.')];
         }
         if (strlen(preg_replace('/\D/', '', $phone) ?? '') < 10) {
-            return ['ok' => false, 'message' => 'Please enter a valid mobile number.'];
+            return ['ok' => false, 'message' => t('order.error_phone', 'Please enter a valid mobile number.')];
         }
         $required = ['shipping_house' => 'house or flat number', 'shipping_street' => 'street or locality', 'shipping_city' => 'city', 'shipping_state' => 'state', 'shipping_pincode' => 'PIN code'];
         foreach ($required as $field => $label) {
             if (trim((string) ($data[$field] ?? '')) === '') {
-                return ['ok' => false, 'message' => 'Please enter your ' . $label . '.'];
+                return ['ok' => false, 'message' => sprintf(t('order.error_field', 'Please enter your %s.'), $label)];
             }
         }
 
         $paymentMethod = (string) ($data['payment_method'] ?? 'cod');
         if (!in_array($paymentMethod, ['cod', 'razorpay'], true)) {
-            return ['ok' => false, 'message' => 'Please choose a payment method.'];
+            return ['ok' => false, 'message' => t('order.error_payment_method', 'Please choose a payment method.')];
         }
         if ($paymentMethod === 'cod' && setting('cod_enabled', '0') !== '1') {
-            return ['ok' => false, 'message' => 'Cash on delivery is not available for this order. Please pay online.'];
+            return ['ok' => false, 'message' => t('order.error_cod', 'Cash on delivery is not available for this order. Please pay online.')];
         }
         if ($paymentMethod === 'razorpay' && !Payment::enabled()) {
-            return ['ok' => false, 'message' => 'Online payment is not available right now.'];
+            return ['ok' => false, 'message' => t('order.error_online', 'Online payment is not available right now.')];
         }
 
         $items = Cart::detailedItems();
         if ($items === []) {
-            return ['ok' => false, 'message' => 'Your cart is empty.'];
+            return ['ok' => false, 'message' => t('order.error_cart_empty', 'Your cart is empty.')];
         }
         foreach ($items as $item) {
             if (!$item['purchasable']) {
-                return ['ok' => false, 'message' => $item['name'] . ' (' . $item['pack_size'] . ') is not available. Please update your cart.'];
+                return ['ok' => false, 'message' => sprintf(t('order.error_unavailable_item', '%s (%s) is not available. Please update your cart.'), $item['name'], $item['pack_size'])];
             }
         }
 
@@ -180,7 +180,7 @@ final class Order
             $pdo->commit();
             $order = self::find($orderId);
             if ($order === null) {
-                return ['ok' => false, 'message' => 'The order could not be created. Please try again.'];
+                return ['ok' => false, 'message' => t('order.error_create', 'The order could not be created. Please try again.')];
             }
 
             Cart::clear();
@@ -209,7 +209,7 @@ final class Order
                 return ['ok' => false, 'message' => $e->getMessage()];
             }
             log_message('error', 'Order creation failed', ['error' => $e->getMessage()]);
-            return ['ok' => false, 'message' => 'We could not place the order. Please try again or contact us.'];
+            return ['ok' => false, 'message' => t('order.error_place', 'We could not place the order. Please try again or contact us.')];
         }
     }
 
