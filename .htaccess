@@ -1,0 +1,16 @@
+# Fallback protection when the hosting document root is the project root.
+# Recommended: point the domain document root to /public instead.
+Options -Indexes
+DirectoryIndex public/index.php
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(app|database|storage|docs|vendor)(/|$) - [F,L]
+  RewriteRule ^(\.env|\.env\.example|composer\.(json|lock)|README\.md|\.gitignore) - [F,L]
+  RewriteCond %{REQUEST_URI} !^/public/
+  RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+</IfModule>

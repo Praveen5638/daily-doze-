@@ -1,0 +1,17 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Allow: /uploads/
+
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /track-order
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /logout
+
+Sitemap: https://dailydoseexport.com/sitemap.xml
